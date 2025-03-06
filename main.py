@@ -5,13 +5,22 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+
 
 app = Flask(__name__)
 
 def create_driver():
-    """Create a WebDriver instance with headless option."""
-    options = webdriver.ChromeOptions()
+    """Create a WebDriver instance with headless Chromium."""
+    options = Options()
     options.add_argument('--headless')  # Run in headless mode
+    options.add_argument('--no-sandbox')  # Avoid some potential errors in headless mode
+    options.add_argument('--disable-dev-shm-usage')  # Solve issues with memory on Docker/Cloud environments
+    options.add_argument('--disable-gpu')  # Disable GPU hardware acceleration for headless mode
+
+    # Use the Chromium binary location if necessary
+    options.binary_location = "/usr/bin/chromium-browser"  # This is common in cloud environments
+
     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 def scrape_news():
