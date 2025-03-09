@@ -52,7 +52,7 @@ def update_news_periodically():
     while True:
         scrape_news()
         print(f"News updated at {last_updated}")
-        time.sleep(600)  # Update every 10 minutes
+        time.sleep(3600)  # Update every 60 minutes
 
 @app.route('/news', methods=['GET'])
 def get_news():
