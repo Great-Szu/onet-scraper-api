@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -10,6 +11,7 @@ import threading
 import time
 
 app = Flask(__name__)
+CORS(app)  # Allow all origins (for testing)
 
 # Global variable to store last scraped data
 cached_news = []
