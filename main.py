@@ -33,10 +33,30 @@ def scrape_news():
         url = "https://wiadomosci.onet.pl/wroclaw"
         driver = create_driver()
         driver.get(url)
+
+        # Wait for the normal article boxes
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a.itemBox.itemBoxNormal')))
 
+        # Scrape the larger article first
+        try:
+            big_article = driver.find_element(By.CSS_SELECTOR, 'a.itemBox.itemBoxBig.itemBoxLast')
+            big_article_data = {
+                'title': big_article.find_element(By.CSS_SELECTOR, '.title span').text,
+                'link': big_article.get_attribute('href')
+            }
+        except Exception:
+            big_article_data = None  # If the big article is missing, continue
+
+        # Scrape the normal articles
         articles = driver.find_elements(By.CSS_SELECTOR, 'a.itemBox.itemBoxNormal')
-        article_list = [{'title': a.find_element(By.CSS_SELECTOR, '.title span').text, 'link': a.get_attribute('href')} for a in articles if a.find_element(By.CSS_SELECTOR, '.title span')]
+        article_list = [
+            {'title': a.find_element(By.CSS_SELECTOR, '.title span').text, 'link': a.get_attribute('href')}
+            for a in articles if a.find_element(By.CSS_SELECTOR, '.title span')
+        ]
+
+        # Add the big article at the beginning of the list
+        if big_article_data:
+            article_list.insert(0, big_article_data)
 
         driver.quit()
 
