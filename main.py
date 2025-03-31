@@ -11,14 +11,14 @@ import threading
 import time
 
 app = Flask(__name__)
-CORS(app)  # Allow all origins (for testing)
+CORS(app)
 
 # Global variable to store last scraped data
 cached_news = []
 last_updated = None  # Stores the last update timestamp
 
 def create_driver():
-    """Create a WebDriver instance with headless Chromium."""
+    # Create a WebDriver instance with headless Chromium.
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
@@ -27,7 +27,7 @@ def create_driver():
     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 def scrape_news():
-    """Scrape news articles and return as a list of dictionaries."""
+    # Scrape news articles and return as a list of dictionaries.
     global cached_news, last_updated
     try:
         url = "https://wiadomosci.onet.pl/wroclaw"
@@ -80,7 +80,7 @@ def get_news():
     if cached_news:
         return jsonify({"last_updated": last_updated, "articles": cached_news})
     else:
-        return jsonify({"error": "No news data available"}), 503  # 503 = Service Unavailable
+        return jsonify({"error": "No news data available"}), 503
 
 if __name__ == '__main__':
     # Start the background thread to update news
